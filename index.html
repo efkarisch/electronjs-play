@@ -3,22 +3,70 @@
   <head>
     <meta charset="UTF-8">
     <title>SysInfoApp</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
   </head>
   <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo center">ShoppingList</a>
+
+      </div>
+    </nav>
 
   <div class="container">
 
-    <h1>Find our more about your computer!!!</h1>
+    <ul class="collection"></ul>
 
-    <div id="output">
+    <div id="actions">
 
+        <button class="btn waves-effect waves-light" type="button" onClick="console.log('hi')">Log Button</button>
+        
     </div>
 
   </div>
     <!-- You can also require other files to run in this process -->
 
-    <script>
+<script>
+
+const electron = require('electron')
+const { app, ipcRenderer } = electron
+
+const ul = document.querySelector('.container').querySelector('ul')
+
+ipcRenderer.on('item:add', (e,item) => {
+
+  console.log('appending li item', item.value)
+
+  const li = document.createElement('li')
+  const itemText = document.createTextNode(item.value)
+  const att = document.createAttribute('data-id')
+  att.value = item.id
+  li.setAttributeNode(att)
+  li.className = 'collection-item'
+  li.appendChild(itemText)
+  ul.appendChild(li)
+
+})
+
+ipcRenderer.on('item:clearAll',() => {
+
+  console.log('attempting to clear all:')
+  ul.innerHTML = ''
+
+})
+
+const removeItem = (e) => {
+  const id = e.target.remove()
+}
+
+ul.addEventListener('dblclick', removeItem)
+
+
+</script>
+
+    <!-- <script>
 
       let memInfo = process.getSystemMemoryInfo()
       let output = `
@@ -55,9 +103,7 @@
         </ul>
       `
 
-      document.getElementById('output').innerHTML = output;
-
-    </script>
+    </script> -->
 
     <script  src="">
       require('./renderer.js')

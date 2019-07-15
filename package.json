@@ -2,7 +2,7 @@
   "name": "sysinfoapp",
   "version": "1.0.0",
   "description": "A minimal Electron application",
-  "main": "main.js",
+  "main": "app.js",
   "scripts": {
     "start": "electron ."
   },
@@ -17,6 +17,12 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "@babel/register": "^7.4.4",
     "electron": "^5.0.6"
+  },
+  "dependencies": {
+    "uuid": "^3.3.2"
   }
 }

@@ -1,13 +1,19 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, Menu} = require('electron')
+const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 const path = require('path')
 const url = require('url')
 const IS_MAC = process.platform == 'darwin'
 const IS_DEV = process.env.NODE_ENV !== "production"
 
+
+// Tell app not to reduce performance when in background to save CPU cycles
+// app.commandLine.appendSwitch("disable-renderer-backgrounding")
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow, addWindow
+
+
 
 const createWindow  = () => {
 
@@ -15,7 +21,8 @@ const createWindow  = () => {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    icon:__dirname+'img/sysimage.png',
+    backgroundColor: '#fff',//best practice for Electron.JS font blur issues relating to transparency rgba, set a bg-color
+    icon:path.join(__dirname,'assets/icon/png/basket.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true
@@ -91,6 +98,17 @@ const createAddWindow = () => {
 
 }
 
+ipcMain.on('item:add', ( e, item ) => {
+  //send recieved item from additemwindow to main app window
+  mainWindow.webContents.send('item:add', item)
+
+  //if you want to auto close window after every single action
+  //addWindow.close()
+})
+
+const clearAllItems = () => {
+  mainWindow.webContents.send('item:clearAll')
+}
 
 const mainMenuTemplate = [
   {
@@ -104,6 +122,9 @@ const mainMenuTemplate = [
       },
       {
         label:"Clear Items",
+        click(){
+          clearAllItems()
+        }
 
       },
       {
